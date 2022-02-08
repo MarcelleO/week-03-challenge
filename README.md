@@ -1,8 +1,8 @@
 # week-03-challenge
-
+```{r}
 library(skimr)
 library(kableExtra)
-
+#
 
 f <- "https://raw.githubusercontent.com/difiore/ada-2022-datasets/main/KamilarAndCooperData.csv"
 d <- read_csv(f, col_names=TRUE)
@@ -38,3 +38,4 @@ s <-
       "DayLength_km"
     ))
 pairs(s[,1:ncol(s)])
+```

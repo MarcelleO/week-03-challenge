@@ -1,0 +1,43 @@
+---
+title: "Challenge 10"
+author: "Marcelle"
+date: "2/7/2022"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+f <- "https://raw.githubusercontent.com/difiore/ada-2021-datasets/main/KamilarAndCooperData.csv"
+d <- read_csv(f, col_names = TRUE) 
+
+s <- mutate(d, Binomial = paste(Genus, Species, sep = " ")) %>%
+  select(Binomial,
+         Family,
+         Brain_size_species_mean,
+         Body_mass_male_mean) %>%
+  group_by(Family) %>%
+  summarise(
+    avgs = mean(Brain_size_species_mean, na.rm = TRUE),
+    avgM = mean(Body_mass_male_mean, na.rm = TRUE)
+  ) %>%
+  arrange()
+s
+
+```
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
