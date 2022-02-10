@@ -1,0 +1,55 @@
+---
+title: "EDA-challenge"
+author: "Marcelle"
+date: "2/9/2022"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+f <- "https://raw.githubusercontent.com/difiore/ada-2022-datasets/main/data-wrangling.csv"
+d <-read_csv(f, col_names=TRUE)
+head(d)
+#new variable defining Body size dimorphism or ratio of average male to female body mass 
+d <- mutate(d, BDS=(Body_mass_female_mean)/(Body_mass_male_mean))
+#new variable defining ratio of number of adult females to males in typical group
+d <- mutate(d, sex_ratio=(AdultFemale)/(AdultMales))
+#new variable defining defensibility index or ratio of day range length to diameter of the home range
+d <- mutate(d, diameter = sqrt(homerange_km2/pi))
+#new variable defining defensibility index using calculated diameter. day range length to diameter
+d <- mutate(d, di = (DayLength_km)/(diameter))
+#plot the relationship between day range and time spent moving overall and by family
+#create a variable to group by family
+f <- ggplot(data=d, aes(x=log(DayLength_km), y=log(Move)))
+f <- f+geom_point(na.rm=TRUE)
+f <- f+facet_wrap(~Family)
+#plot the relationship between day range length and group size overall and by family
+r <- ggplot(data=d, aes(x=log(DayLength_km), y=log(MeanGroupSize)))
+r <- r+geom_point(na.rm=TRUE)
+r <- r+facet_wrap(~Family)
+#plot the relationship between body size dimorphism and canine size dimorphism overall and by family
+y <- ggplot(data=d, aes(x=log(BDS), y=log(Canine_Dimorphism)))
+y <- y+geom_point(na.rm=TRUE)
+y <- y+facet_wrap(~Family)
+#create a new variable named diet_strategy
+diet_strategy <- mutate(d, "diet"= ifelse(Fruit > 50, "frugivore", ifelse(Leaves > 50, "folivore", "omnivore")))
+
+
+#add a variable binomial to data frame d which is a concatenation of Genus and Species
+#trim data for Binomial, Family, Brain_size_species_mean, and Body_mass_male_mean
+#Group by family
+#Calculate average value for Brain_size_species_mean and Body_mass_male_mean per Family
+#arrange by increasing brain size or default
+
+b <- mutate(d, Binomial=paste(Genus, Species, sep = "")) %>%
+  select(Binomial, Family, Brain_size_species_mean, Body_mass_male_mean) %>%
+  group_by(Family) %>%
+  summarise(
+    avgBSM = mean(Brain_size_species_mean, na.rm = TRUE),
+    avgM = mean(Body_mass_male_mean, na.rm = TRUE)) %>%
+  arrange(avgBSM)
+
+```
+
+
+
