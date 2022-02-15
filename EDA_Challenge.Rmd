@@ -11,22 +11,25 @@ f <- "https://raw.githubusercontent.com/difiore/ada-2022-datasets/main/data-wran
 d <-read_csv(f, col_names=TRUE)
 head(d)
 #new variable defining Body size dimorphism or ratio of average male to female body mass 
-d <- mutate(d, BDS=(Body_mass_female_mean)/(Body_mass_male_mean))
+d <- mutate(d, BDS=Body_mass_female_mean/Body_mass_male_mean)
 #new variable defining ratio of number of adult females to males in typical group
-d <- mutate(d, sex_ratio=(AdultFemale)/(AdultMales))
+d <- mutate(d, sex_ratio=AdultFemale/AdultMales)
 #new variable defining defensibility index or ratio of day range length to diameter of the home range
-d <- mutate(d, diameter = sqrt(homerange_km2/pi))
+d <- mutate(d, diameter = sqrt(HomeRange_km2/pi))
 #new variable defining defensibility index using calculated diameter. day range length to diameter
 d <- mutate(d, di = (DayLength_km)/(diameter))
 #plot the relationship between day range and time spent moving overall and by family
 #create a variable to group by family
+plot(d$DayLength_km,d$Body_mass_female_mean)
 f <- ggplot(data=d, aes(x=log(DayLength_km), y=log(Move)))
 f <- f+geom_point(na.rm=TRUE)
 f <- f+facet_wrap(~Family)
+f
 #plot the relationship between day range length and group size overall and by family
 r <- ggplot(data=d, aes(x=log(DayLength_km), y=log(MeanGroupSize)))
 r <- r+geom_point(na.rm=TRUE)
 r <- r+facet_wrap(~Family)
+r
 #plot the relationship between body size dimorphism and canine size dimorphism overall and by family
 y <- ggplot(data=d, aes(x=log(BDS), y=log(Canine_Dimorphism)))
 y <- y+geom_point(na.rm=TRUE)
@@ -42,13 +45,13 @@ diet_strategy <- mutate(d, "diet"= ifelse(Fruit > 50, "frugivore", ifelse(Leaves
 #arrange by increasing brain size or default
 
 b <- mutate(d, Binomial=paste(Genus, Species, sep = "")) %>%
-  select(Binomial, Family, Brain_size_species_mean, Body_mass_male_mean) %>%
+  select(Binomial, Family, Brain_Size_Species_Mean, Body_mass_male_mean) %>%
   group_by(Family) %>%
   summarise(
-    avgBSM = mean(Brain_size_species_mean, na.rm = TRUE),
+    avgBSM = mean(Brain_Size_Species_Mean, na.rm = TRUE),
     avgM = mean(Body_mass_male_mean, na.rm = TRUE)) %>%
   arrange(avgBSM)
-
+print(b)
 ```
 
 
